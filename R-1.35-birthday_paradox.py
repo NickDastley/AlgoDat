@@ -14,7 +14,7 @@ def create_random_birthdays(number_of_persons):
     return birthday_list
 
 
-def list_has_people_with_same_birthday(birthday_list):
+def has_duplicates(birthday_list):
     for i in range(len(birthday_list)):
         for j in range(i + 1, len(birthday_list)):
             if birthday_list[i] == birthday_list[j]:
@@ -25,7 +25,7 @@ def list_has_people_with_same_birthday(birthday_list):
 number_of_persons = 5
 while number_of_persons <= 100:
     birthday_list = create_random_birthdays(number_of_persons)
-    people_with_same_birthday = list_has_people_with_same_birthday(birthday_list)
+    people_with_same_birthday = has_duplicates(birthday_list)
     print(str(number_of_persons) + ": " + str(people_with_same_birthday))
     #print(str(birthday_list))
     number_of_persons += 5
