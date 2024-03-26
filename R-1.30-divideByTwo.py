@@ -5,6 +5,8 @@
 # one must repeatedly divide this number by 2
 # before getting a value less than 2.
 def dividing_by_two(positive_integer):
+    assert positive_integer > 2
+
     number_of_divisions = 0
 
     while True:
