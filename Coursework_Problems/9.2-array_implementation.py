@@ -46,15 +46,23 @@ class MyArray:
         return
 
     def remove(self, key):
-        i = key
-        while (i < self._n):
-            if i + 1 < self._n:
-                self.__setitem__(i, self._A[i + 1])
-                i += 1
+        # i = key
+        # while (i < self._n):
+        #     if i + 1 < self._n:
+        #         self.__setitem__(i, self._A[i + 1])
+        #         i += 1
+        #     else:
+        #         self._A[i] = None
+        #         break
+        # self._n -= 1
+        # return
+        newArray = self._make_array(self._capacity)
+        for i in range(len(self._A) - 2):
+            if i < key:
+                newArray[i] = self._A[i]
             else:
-                self._A[i] = None
-                break
-        self._n -= 1
+                newArray[i] = self._A[i + 1]
+        self._A = newArray
         return
 
     def _resize(self, c):
