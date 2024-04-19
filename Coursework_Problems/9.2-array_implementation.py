@@ -13,9 +13,15 @@ class MyArray:
         return self._n
 
     def __getitem__(self, k):
-        if not 0 <= k < self._n:
+        if not -self._n <= k < self._n:
             raise IndexError('invalid index')
-        return self._A[k]
+
+        if k < 0:
+            index = self._n + k  # k is negative
+        else:
+            index = k
+
+        return self._A[index]
 
     def __setitem__(self, key, value):  # Element überschreiben
         if self._n - 1 < key:
@@ -45,25 +51,22 @@ class MyArray:
         self._n += 1
         return
 
-    def remove(self, key):
-        # i = key
-        # while (i < self._n):
-        #     if i + 1 < self._n:
-        #         self.__setitem__(i, self._A[i + 1])
-        #         i += 1
-        #     else:
-        #         self._A[i] = None
-        #         break
-        # self._n -= 1
-        # return
-        newArray = self._make_array(self._capacity)
-        for i in range(len(self._A) - 2):
-            if i < key:
-                newArray[i] = self._A[i]
+    def remove(self, k):
+        if not 0 <= k < self._n:
+            raise IndexError('invalid index')
+        i = k
+        while (i < self._n):
+            if i + 1 < self._n:
+                self[i] = self._A[i + 1]
+                i += 1
             else:
-                newArray[i] = self._A[i + 1]
-        self._A = newArray
+                self[i] = None
+                break
+        self._n -= 1
         return
+
+    def pop(self):
+        pass
 
     def _resize(self, c):
         B = self._make_array(c)
@@ -82,6 +85,8 @@ if __name__ == '__main__':
     arr.append(6)
     arr.append(7)
     arr.insert(2, 10)
-    arr.append("Döner")
+    arr.append("Something")
     arr.remove(2)
-    print(arr)
+    print(arr.__getitem__(-1))
+    print(arr.__getitem__(-2))
+    print(arr.__getitem__(-3))
