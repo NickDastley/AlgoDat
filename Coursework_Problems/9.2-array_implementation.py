@@ -16,12 +16,12 @@ class MyArray:
         if not -self._n <= k < self._n:
             raise IndexError('invalid index')
 
-        if k < 0:
-            index = self._n + k  # k is negative
+        if 0 < k:
+            return self._A[k]
         else:
-            index = k
+            return self._A[self._n + k]  # k is negative
 
-        return self._A[index]
+
 
     def __setitem__(self, key, value):  # Element überschreiben
         if self._n - 1 < key:
@@ -60,13 +60,18 @@ class MyArray:
                 self[i] = self._A[i + 1]
                 i += 1
             else:
-                self[i] = None
+                self._A[i] = None
                 break
         self._n -= 1
         return
 
     def pop(self):
-        pass
+        to_return = self.__getitem__(-1)
+        self.remove(self._n - 1)
+
+        if self._n < self._capacity / 4:
+            self._resize(int(self._capacity / 2))
+        return to_return
 
     def _resize(self, c):
         B = self._make_array(c)
@@ -90,3 +95,10 @@ if __name__ == '__main__':
     print(arr.__getitem__(-1))
     print(arr.__getitem__(-2))
     print(arr.__getitem__(-3))
+    arr.append(10)
+    arr.append(12)
+    print(arr.pop())
+    print(arr.pop())
+    print(arr.pop())
+    print(arr.pop())
+    print(arr.pop())
