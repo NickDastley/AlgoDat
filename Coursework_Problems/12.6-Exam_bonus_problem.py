@@ -1,42 +1,26 @@
 import math
 
-goal_attribute = "drink"
+goal_attribute = "nico_would_eat"
 
 attributes = {
-    "thirsty", "nauseous", "hot"
+    "mushrooms", "ham", "olives", "pineapple"
 }
-examples = [
-    {
-        "thirsty": False,
-        "nauseous": False,
-        "hot": False,
-        "drink": False
-    },
-    {
-        "thirsty": True,
-        "nauseous": False,
-        "hot": True,
-        "drink": True
-    },
-    {
-        "thirsty": True,
-        "nauseous": False,
-        "hot": False,
-        "drink": True
-    },
-    {
-        "thirsty": False,
-        "nauseous": True,
-        "hot": True,
-        "drink": False
-    },
-    {
-        "thirsty": True,
-        "nauseous": True,
-        "hot": False,
-        "drink": False
-    }
-]
+examples = [{'mushrooms': False, 'ham': False, 'olives': False, 'pineapple': False, "nico_would_eat": True, },
+            {'mushrooms': False, 'ham': False, 'olives': False, 'pineapple': True, "nico_would_eat": False, },
+            {'mushrooms': False, 'ham': False, 'olives': True, 'pineapple': False, "nico_would_eat": False, },
+            {'mushrooms': False, 'ham': False, 'olives': True, 'pineapple': True, "nico_would_eat": False, },
+            {'mushrooms': False, 'ham': True, 'olives': False, 'pineapple': False, "nico_would_eat": True, },
+            {'mushrooms': False, 'ham': True, 'olives': False, 'pineapple': True, "nico_would_eat": True, },
+            {'mushrooms': False, 'ham': True, 'olives': True, 'pineapple': False, "nico_would_eat": True, },
+            {'mushrooms': False, 'ham': True, 'olives': True, 'pineapple': True, "nico_would_eat": True, },
+            {'mushrooms': True, 'ham': False, 'olives': False, 'pineapple': False, "nico_would_eat": False, },
+            {'mushrooms': True, 'ham': False, 'olives': False, 'pineapple': True, "nico_would_eat": False, },
+            {'mushrooms': True, 'ham': False, 'olives': True, 'pineapple': False, "nico_would_eat": False, },
+            {'mushrooms': True, 'ham': False, 'olives': True, 'pineapple': True, "nico_would_eat": False, },
+            {'mushrooms': True, 'ham': True, 'olives': False, 'pineapple': False, "nico_would_eat": True, },
+            {'mushrooms': True, 'ham': True, 'olives': False, 'pineapple': True, "nico_would_eat": False, },
+            {'mushrooms': True, 'ham': True, 'olives': True, 'pineapple': False, "nico_would_eat": True, },
+            {'mushrooms': True, 'ham': True, 'olives': True, 'pineapple': True, "nico_would_eat": False, }]
 
 
 def plurality_val(examples):
@@ -49,14 +33,14 @@ def plurality_val(examples):
     Returns:
         bool: True if the majority value is True, False otherwise.
     """
-    count_true = 0
-    count_false = 0
+    count_True = 0
+    count_False = 0
     for example in examples:
         if example[goal_attribute]:
-            count_true += 1
+            count_True += 1
         else:
-            count_false += 1
-    return count_true > count_false
+            count_False += 1
+    return count_True > count_False
 
 
 def all_examples_same_classification(examples):
@@ -69,14 +53,15 @@ def all_examples_same_classification(examples):
 
 # Returns the attribute with the highest information gain
 def binary_entropy_for_attribute(attribute, examples):
-    true_probability = len([example for example in examples if example[attribute]]) / len(examples)
-    return binary_entropy(true_probability)
+    True_probability = len([example for example in examples if example[attribute]]) / len(examples)
+    return binary_entropy(True_probability)
 
 
 def binary_entropy(probability_k):
     if probability_k == 0 or probability_k == 1:
         return 0
     return - (probability_k * math.log2(probability_k) + (1 - probability_k) * math.log2(1 - probability_k))
+
 
 def remainder(attribute, examples):
     option_1_examples = [example for example in examples if example[attribute]]
@@ -171,3 +156,27 @@ class Node:
 tree = decision_tree_learning(examples, attributes, examples)
 
 tree.print_illustration()
+
+
+def generate_combinations():
+    attributes = {
+        "mushrooms": False,
+        "ham": False,
+        "olives": False,
+        "pineapple": False
+    }
+    combinations = []
+    for mushrooms in [False, True]:
+        for ham in [False, True]:
+            for olive in [False, True]:
+                for pineapple in [False, True]:
+                    combination = attributes.copy()
+                    combination["mushrooms"] = mushrooms
+                    combination["ham"] = ham
+                    combination["olives"] = olive
+                    combination["pineapple"] = pineapple
+                    combinations.append(combination)
+    return combinations
+
+
+# print(generate_combinations())
