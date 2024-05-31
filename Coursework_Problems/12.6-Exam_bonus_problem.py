@@ -24,15 +24,6 @@ examples = [{'mushrooms': False, 'ham': False, 'olives': False, 'pineapple': Fal
 
 
 def plurality_val(examples):
-    """
-    Calculates the majority value in a set of examples based on the goal_attribute key.
-
-    Parameters: examples (list): A list of dictionaries representing examples. Each dictionary should have a the
-    goal_attribute key with a boolean value.
-
-    Returns:
-        bool: True if the majority value is True, False otherwise.
-    """
     count_True = 0
     count_False = 0
     for example in examples:
@@ -90,21 +81,24 @@ def best_information_gaining_attribute(attributes, examples):
     return max(information_gains_per_attribute, key=information_gains_per_attribute.get)
 
 
-def decision_tree_learning(examples, attributes, parent_examples):
+def decision_tree_learning(examples, attributes, parent_examples, last_best_attribute):
     # ran out of examples
     if len(examples) == 0:
-        return plurality_val(parent_examples)
+        #return plurality_val(parent_examples)
+        return Node(None, None, plurality_val(parent_examples))
 
     elif all_examples_same_classification(examples):
         # return the classification
-        return examples[0][goal_attribute]
+        # return examples[0][goal_attribute]
+        return Node(None, None, examples[0][goal_attribute])
 
     # no attributes remaining
     elif len(attributes) == 0:
-        return plurality_val(examples)
+        #return plurality_val(examples)
+        return Node(None, None, plurality_val(examples))
     else:
         best_attribute = best_information_gaining_attribute(attributes, examples)
-        tree = Node(best_attribute, best_attribute + " = True")
+        tree = Node(best_attribute, best_attribute)
         # go through all unique attributes in the best attribute
         option_1_examples = []
         option_2_examples = []
@@ -114,14 +108,14 @@ def decision_tree_learning(examples, attributes, parent_examples):
             else:
                 option_2_examples.append(example)
 
-        subtree = decision_tree_learning(option_1_examples, attributes - {best_attribute}, examples)
+        subtree = decision_tree_learning(option_1_examples, attributes - {best_attribute}, examples, best_attribute)
         if isinstance(subtree, Node):
-            subtree.label = subtree.attribute + " = True"
+            subtree.label = best_attribute + " = True"
         tree.add_child(subtree)
 
-        subtree = decision_tree_learning(option_2_examples, attributes - {best_attribute}, examples)
+        subtree = decision_tree_learning(option_2_examples, attributes - {best_attribute}, examples, best_attribute)
         if isinstance(subtree, Node):
-            subtree.label = subtree.attribute + " = False"
+            subtree.label = best_attribute + " = False"
         tree.add_child(subtree)
         return tree
 
@@ -129,9 +123,10 @@ def decision_tree_learning(examples, attributes, parent_examples):
 # Node for a decision tree
 class Node:
 
-    def __init__(self, attribute, label):
+    def __init__(self, attribute, label, result=None):
         self.attribute = attribute
         self.label = label
+        self.result = result
         self.left = None
         self.right = None
 
@@ -142,18 +137,18 @@ class Node:
             self.right = node
 
     def print_illustration(self, indent=""):
-        print(indent + self.label)
-        if isinstance(self.left, Node):
-            self.left.print_illustration(indent + "├── ")
+        if self.result is None:
+            print(indent + self.label)
         else:
-            print(indent + "├── " + str(self.left))
-        if isinstance(self.right, Node):
-            self.right.print_illustration(indent + "└── ")
-        else:
-            print(indent + "└── " + str(self.right))
+            print(indent + self.label + ": " + str(self.result))
+        if self.attribute is not None:
+            if self.left:
+                self.left.print_illustration(indent + "├── ")
+            if self.right:
+                self.right.print_illustration(indent + "└── ")
 
 
-tree = decision_tree_learning(examples, attributes, examples)
+tree = decision_tree_learning(examples, attributes, examples, None)
 
 tree.print_illustration()
 
